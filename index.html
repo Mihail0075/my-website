@@ -1,30 +1,235 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="mk">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Website</title>
+  <meta name="description" content="Автобуска Станица Прилеп — возни редови, цени и информации. Prilep Bus Station — schedules, prices and info." />
+  <title>Автобуска Станица Прилеп</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h1>Welcome to My Website</h1>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">About</a>
-      <a href="#">Contact</a>
-    </nav>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner container">
+      <a href="#home" class="nav-logo">
+        <svg class="nav-bus-icon" width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect width="34" height="34" rx="7" fill="#C8232A"/>
+          <rect x="5" y="10" width="24" height="13" rx="3" fill="white"/>
+          <rect x="5" y="17" width="24" height="7" rx="0" fill="white" opacity="0.6"/>
+          <rect x="8" y="13" width="5" height="5" rx="1" fill="#0D1B2A"/>
+          <rect x="21" y="13" width="5" height="5" rx="1" fill="#0D1B2A"/>
+          <circle cx="10" cy="26" r="2.5" fill="#0D1B2A"/>
+          <circle cx="24" cy="26" r="2.5" fill="#0D1B2A"/>
+        </svg>
+        <div class="nav-logo-text">
+          <strong data-mk="Автобуска Станица" data-en="Bus Station">Автобуска Станица</strong>
+          <span>Прилеп</span>
+        </div>
+      </a>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#schedules" data-mk="Возни Редови" data-en="Schedules">Возни Редови</a></li>
+        <li><a href="#prices" data-mk="Цени" data-en="Prices">Цени</a></li>
+        <li><a href="#info" data-mk="Информации" data-en="Info">Информации</a></li>
+        <li><a href="#contact" data-mk="Контакт" data-en="Contact">Контакт</a></li>
+      </ul>
+
+      <div class="nav-controls">
+        <button class="lang-toggle" id="lang-toggle" aria-label="Switch language">
+          <span class="lang-opt active" data-lang="mk">МК</span>
+          <span class="lang-sep">/</span>
+          <span class="lang-opt" data-lang="en">EN</span>
+        </button>
+        <button class="nav-burger" id="nav-burger" aria-label="Мени" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero" id="home">
+    <div class="hero-content container">
+      <p class="hero-eyebrow" data-mk="Прилеп · Северна Македонија" data-en="Prilep · North Macedonia">Прилеп · Северна Македонија</p>
+      <h1 class="hero-title">
+        <span class="hero-title-top" data-mk="Автобуска" data-en="Prilep">Автобуска</span>
+        <span class="hero-title-bot" data-mk="Станица" data-en="Bus Station">Станица</span>
+      </h1>
+      <p class="hero-sub" data-mk="Врата кон Македонија" data-en="Gateway to Macedonia">Врата кон Македонија</p>
+      <div class="hero-ctas">
+        <a href="#schedules" class="btn btn-primary" data-mk="Возни Редови" data-en="Schedules">Возни Редови</a>
+        <a href="#info" class="btn btn-ghost" data-mk="За Станицата" data-en="Station Info">За Станицата</a>
+      </div>
+    </div>
+
+    <div class="hero-ticker" id="hero-ticker">
+      <span class="ticker-label" data-mk="Следен автобус:" data-en="Next bus:">Следен автобус:</span>
+      <span class="ticker-value" id="ticker-value">--:-- → ---</span>
+    </div>
+
+    <!-- Markovi Kuli silhouette — the signature element -->
+    <div class="hero-mountain" aria-hidden="true">
+      <svg class="mountain-svg" viewBox="0 0 1440 380" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+        <!-- Distant ridge -->
+        <path class="mountain-back" d="M0,380 L0,300 C120,278 240,265 360,258 C480,251 600,246 720,242 C840,238 960,236 1080,230 C1200,224 1320,218 1440,210 L1440,380 Z"/>
+        <!-- Markovi Kuli front formation -->
+        <path class="mountain-front" d="
+          M0,380 L0,350 L55,342 L88,332 L115,318 L138,322
+          L158,295 L168,302 L180,272 L190,280
+          L204,248 L212,256 L224,228 L232,236
+          L246,205 L253,213 L266,180 L274,190
+          L288,155 L296,165 L310,132 L318,143
+          L332,110 L340,122 L354,88 L362,100
+          L375,68 L382,80 L394,52 L401,64
+          L412,38 L419,50 L428,28 L435,40
+          L444,22 L451,34 L458,18 L465,30
+          L473,22 L480,34 L488,26 L496,38
+          L505,30 L515,44 L526,34 L540,52
+          L554,40 L568,58 L584,46 L602,66
+          L622,52 L644,75 L666,60 L690,85
+          L715,70 L742,96 L770,80 L800,108
+          L832,92 L865,120 L900,104 L936,134
+          L972,118 L1008,148 L1044,133 L1082,162
+          L1118,148 L1156,176 L1192,162 L1230,190
+          L1268,176 L1308,202 L1348,190 L1392,215
+          L1440,205 L1440,380 Z"/>
+      </svg>
+    </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <h2>Hello, world!</h2>
-      <p>This is the beginning of something great.</p>
-    </section>
-  </main>
+  <!-- SCHEDULES -->
+  <section id="schedules" class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="section-eyebrow" data-mk="Одредиште и час" data-en="Destination & Time">Одредиште и час</p>
+        <h2 data-mk="Возни Редови" data-en="Schedules">Возни Редови</h2>
+        <p class="section-desc" data-mk="Секојдневни поласки од Прилеп" data-en="Daily departures from Prilep">Секојдневни поласки од Прилеп</p>
+      </div>
 
-  <footer>
-    <p>&copy; 2026 Mihail0075</p>
+      <div class="schedule-filters reveal" id="schedule-filters"></div>
+
+      <div class="schedule-table reveal">
+        <div class="schedule-header">
+          <span data-mk="Одредиште" data-en="Destination">Одредиште</span>
+          <span data-mk="Поласк" data-en="Departure">Поласк</span>
+          <span class="hide-sm" data-mk="Времетраење" data-en="Duration">Времетраење</span>
+          <span data-mk="Цена" data-en="Price">Цена</span>
+        </div>
+        <div class="schedule-body" id="schedule-body"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICES -->
+  <section id="prices" class="section section-alt">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="section-eyebrow" data-mk="Цени на билети" data-en="Ticket prices">Цени на билети</p>
+        <h2 data-mk="Цени" data-en="Prices">Цени</h2>
+        <p class="section-desc" data-mk="Еднонасочна карта, плаќање на каса" data-en="One-way ticket, pay at counter">Еднонасочна карта, плаќање на каса</p>
+      </div>
+      <div class="price-grid" id="price-grid"></div>
+    </div>
+  </section>
+
+  <!-- STATION INFO -->
+  <section id="info" class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="section-eyebrow" data-mk="Каде сме и кога" data-en="Where &amp; when">Каде сме и кога</p>
+        <h2 data-mk="За Станицата" data-en="About the Station">За Станицата</h2>
+      </div>
+      <div class="info-grid">
+
+        <div class="info-card reveal">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+              <circle cx="12" cy="9" r="2.5"/>
+            </svg>
+          </div>
+          <h3 data-mk="Адреса" data-en="Address">Адреса</h3>
+          <p data-mk="Ул. Марко Бојаџиев бб<br>Прилеп 7500" data-en="Marko Bojadžiev St. bb<br>Prilep 7500">Ул. Марко Бојаџиев бб<br>Прилеп 7500</p>
+        </div>
+
+        <div class="info-card reveal">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <h3 data-mk="Работно Време" data-en="Opening Hours">Работно Време</h3>
+          <p data-mk="Секој ден<br>05:00 – 22:00" data-en="Every day<br>05:00 – 22:00">Секој ден<br>05:00 – 22:00</p>
+        </div>
+
+        <div class="info-card reveal">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.6 3.32 2 2 0 0 1 3.57 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.29 6.29l.87-.87a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+          <h3 data-mk="Телефон" data-en="Phone">Телефон</h3>
+          <p><a href="tel:+38948422500">+389 48 422 500</a></p>
+        </div>
+
+        <div class="info-card reveal">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <path d="M8 21h8M12 17v4"/>
+            </svg>
+          </div>
+          <h3 data-mk="Услуги" data-en="Facilities">Услуги</h3>
+          <p data-mk="Чекалница · Каса · Кафе<br>Банкомат · Гардероба" data-en="Waiting room · Ticket office · Café<br>ATM · Luggage storage">Чекалница · Каса · Кафе<br>Банкомат · Гардероба</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section section-alt">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="section-eyebrow" data-mk="Пишете ни" data-en="Get in touch">Пишете ни</p>
+        <h2 data-mk="Контакт" data-en="Contact">Контакт</h2>
+        <p class="section-desc" data-mk="Имате прашање? Ќе ви одговориме наскоро." data-en="Have a question? We'll get back to you soon.">Имате прашање? Ќе ви одговориме наскоро.</p>
+      </div>
+
+      <form class="contact-form reveal" id="contact-form" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-name" data-mk="Иhе" data-en="Name">Иhе</label>
+            <input type="text" id="f-name" name="name" required />
+          </div>
+          <div class="form-group">
+            <label for="f-email">Email</label>
+            <input type="email" id="f-email" name="email" placeholder="email@example.com" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="f-msg" data-mk="Порака" data-en="Message">Порака</label>
+          <textarea id="f-msg" name="message" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" data-mk="Испрати Порака" data-en="Send Message">Испрати Порака</button>
+        <p class="form-success" id="form-success" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p data-mk="© 2026 Автобуска Станица Прилеп. Сите права задржани." data-en="© 2026 Prilep Bus Station. All rights reserved.">© 2026 Автобуска Станица Прилеп. Сите права задржани.</p>
+      <p class="footer-heart" data-mk="Направено за Прилеп" data-en="Made for Prilep">Направено за Прилеп</p>
+    </div>
   </footer>
+
+  <script src="app.js"></script>
 </body>
 </html>
