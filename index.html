@@ -1,30 +1,310 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="mk">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Website</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Автобуска Станица Прилеп — распоред на сите линиски превози до градовите низ Македонија.">
+  <meta name="theme-color" content="#0b0f19">
+  <title>Автобуска Станица Прилеп</title>
+
+  <link rel="icon" href="assets/logo.png" sizes="any">
+  <link rel="apple-touch-icon" href="assets/logo.png">
+
+  <!-- Преглед при споделување (Viber, Facebook, Messenger).
+       Кога ќе се земе домен, og:url и og:image да станат целосни адреси
+       (на пр. https://avtobuska-prilep.mk/assets/hero.jpg) — некои мрежи
+       не прифаќаат релативни патеки. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Автобуска Станица Прилеп">
+  <meta property="og:title" content="Автобуска Станица Прилеп — распоред на поаѓања">
+  <meta property="og:description" content="Сите линии до градовите низ Македонија и во странство, со часови, цени и превозници.">
+  <meta property="og:image" content="assets/hero.jpg">
+  <meta property="og:locale" content="mk_MK">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Welcome to My Website</h1>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">About</a>
-      <a href="#">Contact</a>
-    </nav>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="#" class="nav__logo">
+        <span class="nav__logo-icon">
+          <img src="assets/logo.png" alt="Пелагонија Бус" width="256" height="256">
+        </span>
+        <span class="nav__logo-text"><span data-i18n="logoShort">АС</span> <strong data-i18n="logoCity">Прилеп</strong></span>
+      </a>
+      <nav class="nav__links">
+        <a href="#destinacii" data-i18n="navDest">Дестинации</a>
+        <a href="#raspored" data-i18n="navSched">Распоред</a>
+        <a href="#info" data-i18n="navInfo">Информации</a>
+      </nav>
+      <div class="nav__right">
+        <a href="tel:+38948400307" class="nav__cta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>048 400 307</span>
+        </a>
+        <div class="nav__lang" role="group" aria-label="Јазик" data-i18n-aria="langLabel">
+          <button type="button" class="nav__lang-btn" data-lang="mk" aria-pressed="true">МК</button>
+          <button type="button" class="nav__lang-btn" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <button class="nav__burger" id="navBurger" aria-label="Мени" data-i18n-aria="menuLabel" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="nav__mobile" id="navMobile">
+      <a href="#destinacii" data-i18n="navDest">Дестинации</a>
+      <a href="#raspored" data-i18n="navSched">Распоред</a>
+      <a href="#info" data-i18n="navInfo">Информации</a>
+      <a href="tel:+38948400307" class="nav__mobile-phone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        048 400 307
+      </a>
+    </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <h2>Hello, world!</h2>
-      <p>This is the beginning of something great.</p>
-    </section>
-  </main>
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero__bg"></div>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <p class="hero__eyebrow reveal-up" style="--d:0s">
+        <span class="pulse-dot"></span>
+        <span data-i18n="heroEyebrow">Информатор за линиски превоз</span>
+      </p>
+      <h1 class="hero__title">
+        <span class="hero__kicker reveal-up" style="--d:.1s" data-i18n="heroKicker">Автобуска станица</span>
+        <span class="hero__city reveal-up" style="--d:.24s" data-i18n="heroCity">Прилеп</span>
+      </h1>
+      <div class="hero__actions reveal-up" style="--d:.6s">
+        <div class="hero__actions-row">
+          <a href="#destinacii" class="btn btn--primary">
+            <span data-i18n="btnSchedule">Види распоред</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+          </a>
+          <a href="#info" class="btn btn--ghost" data-i18n="btnInfo">Информации</a>
+        </div>
+        <a href="https://www.pelagonija.mk/mk" target="_blank" rel="noopener" class="btn btn--ticket">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 11v2M13 17v2"/></svg>
+          <span data-i18n="btnTicket">Купи билет онлајн</span>
+        </a>
+      </div>
+      <a href="#raspored" class="hero__next reveal-up" style="--d:.72s" id="heroNext">
+        <span class="hero__next-label">
+          <span class="pulse-dot"></span>
+          <span id="heroNextLabel" data-i18n="nextDeparture">Следно поаѓање</span>
+        </span>
+        <span class="hero__next-main">
+          <span class="hero__next-time" id="heroNextTime">--:--</span>
+          <svg class="hero__next-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          <span class="hero__next-city" id="heroNextCity">—</span>
+        </span>
+        <span class="hero__next-meta" id="heroNextMeta"></span>
+      </a>
+    </div>
+    <a href="#destinacii" class="hero__scroll" aria-label="Скролај надолу" data-i18n-aria="scrollDown">
+      <span class="hero__scroll-wheel"></span>
+    </a>
+  </section>
 
-  <footer>
-    <p>&copy; 2026 Mihail0075</p>
+  <!-- ===== CITIES — HORIZONTAL SCROLL ===== -->
+  <section class="cities" id="destinacii">
+    <div class="section-head reveal">
+      <p class="section-head__eyebrow" data-i18n="destEyebrow">Дестинации</p>
+      <h2 class="section-head__title" data-i18n="destTitle">Каде патуваш денес?</h2>
+      <p class="section-head__sub" data-i18n="destSub">Пребарај или избери град за да го видиш распоредот на поаѓања.</p>
+    </div>
+
+    <div class="dir-switch reveal" role="group" aria-label="Насока">
+      <button type="button" class="dir-btn is-active" data-dir="out" data-i18n="dirOut" aria-pressed="true">Поаѓања од Прилеп</button>
+      <button type="button" class="dir-btn" data-dir="in" data-i18n="dirIn" aria-pressed="false">Поаѓања за Прилеп</button>
+    </div>
+
+    <div class="cities__search reveal">
+      <svg class="cities__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input type="search" id="citySearch" autocomplete="off" spellcheck="false"
+             placeholder="Пребарај град…" aria-label="Пребарај град"
+             data-i18n-placeholder="searchPlaceholder" data-i18n-aria="searchPlaceholder">
+      <button type="button" class="cities__search-clear" id="citySearchClear" aria-label="Исчисти" data-i18n-aria="searchClear" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="cities__group" id="groupMain">
+      <p class="cities__group-title" data-i18n="groupMain">Главни дестинации</p>
+      <div class="cities__wrap">
+        <button class="cities__arrow cities__arrow--left" data-track="mainTrack" aria-label="Скролај лево" data-i18n-aria="arrowLeft">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="cities__track" id="mainTrack"><!-- JS --></div>
+        <button class="cities__arrow cities__arrow--right" data-track="mainTrack" aria-label="Скролај десно" data-i18n-aria="arrowRight">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="cities__group" id="groupIntl">
+      <p class="cities__group-title" data-i18n="groupIntl">Меѓународни</p>
+      <div class="cities__wrap">
+        <button class="cities__arrow cities__arrow--left" data-track="intlTrack" aria-label="Скролај лево" data-i18n-aria="arrowLeft">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="cities__track" id="intlTrack"><!-- JS --></div>
+        <button class="cities__arrow cities__arrow--right" data-track="intlTrack" aria-label="Скролај десно" data-i18n-aria="arrowRight">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="cities__group" id="groupOther">
+      <p class="cities__group-title" data-i18n="groupOther">Останати дестинации</p>
+      <div class="cities__wrap">
+        <button class="cities__arrow cities__arrow--left" data-track="otherTrack" aria-label="Скролај лево" data-i18n-aria="arrowLeft">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="cities__track" id="otherTrack"><!-- JS --></div>
+        <button class="cities__arrow cities__arrow--right" data-track="otherTrack" aria-label="Скролај десно" data-i18n-aria="arrowRight">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <p class="cities__empty" id="citiesEmpty" data-i18n="noMatch" hidden>Нема град со тоа име.</p>
+  </section>
+
+  <!-- ===== SCHEDULE ===== -->
+  <section class="schedule" id="raspored">
+    <div class="schedule__inner">
+      <div class="schedule__head">
+        <div>
+          <p class="schedule__eyebrow" data-i18n="schedEyebrow">Распоред на поаѓања</p>
+          <h3 class="schedule__city" id="scheduleCity">Прилеп → Скопје</h3>
+        </div>
+        <div class="schedule__meta">
+          <span class="schedule__badge" id="lineCount">— линии</span>
+        </div>
+      </div>
+      <div class="schedule__list" id="scheduleList"><!-- JS --></div>
+      <p class="schedule__note">
+        <span data-i18n="schedNote">Деновите на возење се наведени кај секоја линија. Распоредот е информативен — за точен термин на поаѓање јавете се на билетарата на 048 400 307 или 075 448 023.</span>
+        <strong class="schedule__note-holiday" data-i18n="schedNoteHoliday">За време на празници распоредот може да отстапува — препорачуваме задолжителна потврда по телефон пред патувањето.</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== INFO ===== -->
+  <section class="info" id="info">
+    <div class="section-head reveal">
+      <p class="section-head__eyebrow" data-i18n="infoEyebrow">Информации</p>
+      <h2 class="section-head__title" data-i18n="infoTitle">Автобуска Станица Прилеп</h2>
+    </div>
+    <div class="info__grid">
+      <div class="info-card reveal" style="--d:0s">
+        <div class="info-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h4 data-i18n="cardHours">Работно време</h4>
+        <p>
+          <span data-i18n="hoursWeek">пон – саб</span> <strong>05:00 — 21:30</strong><br>
+          <span data-i18n="hoursSun">недела</span> <strong>05:30 — 21:30</strong>
+        </p>
+      </div>
+      <div class="info-card reveal" style="--d:.1s">
+        <div class="info-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <h4 data-i18n="cardOffice">Билетара</h4>
+        <p>
+          <a href="tel:+38948400307"><strong>+389 48 400 307</strong></a><br>
+          <a href="tel:+38975448023"><strong>+389 75 448 023</strong></a><br>
+          <a href="mailto:avtobuskaprilep@gmail.com">avtobuskaprilep@gmail.com</a>
+        </p>
+      </div>
+      <a class="info-card reveal" style="--d:.2s" href="https://maps.app.goo.gl/LBRWs7BTvHz7JnuK7" target="_blank" rel="noopener">
+        <div class="info-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <h4 data-i18n="cardLocation">Локација</h4>
+        <p><span data-i18n="locationAddr">бул. „Гоце Делчев“ бр. 79</span><br><strong data-i18n="locationCity">Прилеп</strong></p>
+        <span class="info-card__go">
+          <span data-i18n="locationGo">Отвори во Google Maps</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </span>
+      </a>
+      <a class="info-card info-card--feature reveal" style="--d:.3s" href="https://www.pelagonija.mk/mk" target="_blank" rel="noopener">
+        <div class="info-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
+        </div>
+        <h4 data-i18n="cardPayment">Плаќање</h4>
+        <p><span data-i18n="payCounter">Билети на шалтер</span><br><strong data-i18n="payMethods">Готовина и картичка</strong></p>
+        <span class="info-card__btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 11v2M13 17v2"/></svg>
+          <span data-i18n="btnTicket">Купи билет онлајн</span>
+        </span>
+      </a>
+
+      <div class="info-card reveal" style="--d:.4s">
+        <div class="info-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg>
+        </div>
+        <h4 data-i18n="cardLuggage">Гардероб</h4>
+        <p data-i18n="luggageText">Оставете го багажот на сигурно додека чекате или разгледувате.</p>
+      </div>
+
+      <div class="info-card reveal" style="--d:.45s">
+        <div class="info-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a3 3 0 0 1 0 6h-1M3 8h15v6a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8ZM6 2v2M10 2v2M14 2v2"/></svg>
+        </div>
+        <h4 data-i18n="cardShop">Мини маркет и кафе</h4>
+        <p data-i18n="shopText">Кафе, чај, топло чоколадо, пијалоци и слатки во самата станица.</p>
+      </div>
+
+      <div class="info-card info-card--ev reveal" style="--d:.5s">
+        <div class="info-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg>
+        </div>
+        <h4 data-i18n="cardEv">Полнач за електрични возила</h4>
+        <p><span data-i18n="evText">22 kW со европски приклучок</span><br><strong data-i18n="evPrice">18 ден за kWh</strong></p>
+      </div>
+
+      <a class="info-card info-card--taxi reveal" style="--d:.55s" href="tel:+38975353580">
+        <div class="info-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 17v2M18 17v2M4 13l1.5-4.5A2 2 0 0 1 7.4 7h9.2a2 2 0 0 1 1.9 1.5L20 13v4H4v-4Z"/><circle cx="7.5" cy="15" r="1" fill="currentColor"/><circle cx="16.5" cy="15" r="1" fill="currentColor"/></svg>
+        </div>
+        <h4 data-i18n="cardTaxi">Такси до аеродроми</h4>
+        <p data-i18n="taxiText">Скопје, Солун, Тирана, Приштина, Софија и Белград.</p>
+        <span class="info-card__go">
+          <span>075 353 580</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </span>
+      </a>
+    </div>
+
+    <p class="info__warning" data-i18n="ticketWarning">
+      Внимание: единствено порталот pelagonija.mk продава важечки билети за поаѓања од Прилеп.
+      Уплатите преку други сајтови не се признаваат и не резервираат место во автобусот.
+    </p>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <span class="nav__logo-icon">
+          <img src="assets/logo.png" alt="Пелагонија Бус" width="256" height="256">
+        </span>
+        <p data-i18n="footerName">Автобуска Станица Прилеп</p>
+      </div>
+      <p class="footer__copy" data-i18n="footerCopy">© 2026 Автобуска Станица Прилеп · Информативен распоред</p>
+    </div>
   </footer>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
