@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Contrast (on white): brand 7.8:1, ink 17:1, muted 7.6:1,
+ * field border 4.8:1 — all pass WCAG AA for text and UI components.
+ */
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --color-brand: #0b5d4b;
+  --color-brand-hover: #084538;
+  --color-brand-soft: #e3f1ed;
+  --color-brand-dark: #0a3a31;
+  --color-accent: #f2a900;
+  --color-accent-soft: #fff4d6;
+
+  --color-ink: #0f172a;
+  --color-body: #1e293b;
+  --color-muted: #475569;
+  --color-line: #d4dbe3;
+  --color-field: #64748b;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f4f6f5;
+
+  --color-success: #15803d;
+  --color-success-soft: #dcfce7;
+  --color-warning: #a16207;
+  --color-warning-soft: #fef3c7;
+  --color-danger: #b91c1c;
+  --color-danger-soft: #fee2e2;
+  --color-info: #1d4ed8;
+  --color-info-soft: #dbeafe;
+
+  --radius-tight: 6px;
+  --radius-std: 10px;
+  --radius-card: 14px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-surface-alt text-body antialiased;
+    font-family: var(--font-sans);
+  }
+  h1,
+  h2,
+  h3 {
+    @apply text-ink;
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+}
