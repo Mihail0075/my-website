@@ -1,0 +1,801 @@
+/* Информативна табла — Автобуска станица Прилеп */
+
+:root {
+  --bg: #06080b;
+  --panel: #0d1015;
+  --panel-2: #12161c;
+  --line: #1c222a;
+  --tile-top: #262b33;
+  --tile-bottom: #1a1e24;
+  --tile-text: #f3efe4;
+  --amber: #ffc426;
+  --green: #3fd683;
+  --red: #ff5b52;
+  --orange: #ff9f2e;
+  --muted: #8b939f;
+  --text: #e9edf2;
+
+  --mono: "JetBrains Mono", "DejaVu Sans Mono", Consolas, monospace;
+  --sans: "Roboto Condensed", "Arial Narrow", system-ui, sans-serif;
+
+  --tw: clamp(14px, 1.7vw, 40px);           /* ширина на една плочка */
+  --gap: 2px;
+  --step: calc(var(--tw) + var(--gap));
+  --dest-chars: 12;
+  --line-chars: 6;
+  --pad: clamp(16px, 2vw, 40px);
+
+  color-scheme: dark;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* ---------- Заглавие ---------- */
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2vw, 32px);
+  padding: clamp(10px, 1.6vh, 20px) var(--pad);
+  background: linear-gradient(#10141a, #0a0d11);
+  border-bottom: 3px solid var(--amber);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.2vw, 20px);
+  margin-right: auto;
+  min-width: 0;
+}
+
+.brand > div {
+  min-width: 0;
+}
+
+.brand-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: calc(var(--tw) * 2.4);
+  height: calc(var(--tw) * 2.4);
+  padding: calc(var(--tw) * 0.4);
+  border-radius: 8px;
+  background: var(--amber);
+  color: #111;
+}
+
+.brand h1 {
+  font-size: calc(var(--tw) * 1.55);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.station {
+  margin-top: 0.3em;
+  font-size: calc(var(--tw) * 0.72);
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--panel-2);
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 7px;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tab small {
+  font-size: 10px;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.tab:hover {
+  color: var(--text);
+}
+
+.tab[aria-current="page"] {
+  background: var(--amber);
+  color: #111;
+}
+
+.tab:focus-visible,
+.icon-btn:focus-visible,
+.search input:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+.clock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-family: var(--mono);
+}
+
+.clock-time {
+  font-size: calc(var(--tw) * 1.7);
+  line-height: 1;
+  color: var(--tile-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.clock-time span {
+  font-size: 0.55em;
+  color: var(--amber);
+}
+
+.clock-date {
+  margin-top: 0.4em;
+  font-family: var(--sans);
+  font-size: calc(var(--tw) * 0.62);
+  color: var(--muted);
+}
+
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-2);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  color: var(--text);
+}
+
+:fullscreen .icon-btn,
+:fullscreen .tabs {
+  display: none;
+}
+
+/* ---------- Табла ---------- */
+
+.view {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.view-board {
+  padding: 0 var(--pad);
+  overflow: hidden;
+}
+
+.board-row {
+  display: grid;
+  grid-template-columns:
+    calc(5 * var(--step))
+    calc(var(--line-chars) * var(--step))
+    calc(var(--dest-chars) * var(--step))
+    minmax(0, 1fr)
+    calc(4 * var(--step))
+    minmax(0, 1.1fr);
+  column-gap: calc(var(--tw) * 0.9);
+  align-items: start;
+  padding: calc(var(--tw) * 0.3) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+#board-rows .board-row:nth-child(even) {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.018) 20%, rgba(255, 255, 255, 0.018) 80%, transparent);
+}
+
+.board-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: calc(var(--tw) * 0.55) 0 calc(var(--tw) * 0.35);
+  background: var(--bg);
+  border-bottom: 1px solid #2a313b;
+  color: var(--muted);
+  font-size: calc(var(--tw) * 0.56);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cell {
+  position: relative;
+  min-width: 0;
+}
+
+.board-head .cell {
+  display: block;
+  min-height: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: normal;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+.board-head .c-platform {
+  text-align: center;
+}
+
+.flaps {
+  display: flex;
+  gap: var(--gap);
+}
+
+.flap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--tw);
+  height: calc(var(--tw) * 1.42);
+  border-radius: 3px;
+  background: linear-gradient(to bottom, var(--tile-top) 0 50%, var(--tile-bottom) 50% 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 1px 2px rgba(0, 0, 0, 0.7);
+  color: var(--tile-text);
+  font: 800 calc(var(--tw) * 1.02) / 1 var(--mono);
+}
+
+.flap::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 1px);
+  height: 2px;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.flap.flip {
+  animation: flip 70ms ease-in;
+}
+
+@keyframes flip {
+  50% {
+    transform: scaleY(0.15);
+    filter: brightness(1.5);
+  }
+}
+
+.c-time .flap {
+  color: var(--amber);
+}
+
+.c-platform .flaps {
+  justify-content: center;
+}
+
+.c-platform .flap {
+  color: var(--amber);
+}
+
+.board-row.is-next-day .c-time .flap {
+  color: var(--orange);
+}
+
+.via,
+.next-day {
+  display: block;
+  margin-top: calc(var(--tw) * 0.18);
+  overflow: hidden;
+  font-size: calc(var(--tw) * 0.52);
+  line-height: 1.2;
+  color: var(--muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.next-day {
+  color: var(--orange);
+}
+
+.c-carrier {
+  display: flex;
+  align-items: center;
+  min-height: calc(var(--tw) * 1.42);
+  gap: 0.55em;
+  font-size: calc(var(--tw) * 0.7);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.carrier-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.badge {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.3em;
+  padding: 0.2em 0.35em;
+  border-radius: 4px;
+  color: #fff;
+  font: 800 0.72em / 1.2 var(--mono);
+  letter-spacing: 0.02em;
+}
+
+.c-status {
+  line-height: calc(var(--tw) * 1.42);
+  font-size: calc(var(--tw) * 0.78);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.s-scheduled {
+  color: var(--muted);
+}
+
+.s-ontime {
+  color: var(--green);
+}
+
+.s-boarding {
+  color: var(--green);
+}
+
+.s-boarding::before,
+.s-final::before {
+  content: "";
+  display: inline-block;
+  width: 0.55em;
+  height: 0.55em;
+  margin-right: 0.45em;
+  border-radius: 50%;
+  background: currentColor;
+  vertical-align: 0.1em;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.s-final {
+  color: var(--red);
+  animation: blink 1s steps(2, start) infinite;
+}
+
+.s-delayed {
+  color: var(--orange);
+}
+
+.s-cancelled {
+  color: var(--red);
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.s-departed {
+  color: #5d6570;
+}
+
+.board-row.is-departed .flap,
+.board-row.is-cancelled .flap {
+  color: #6d747e;
+}
+
+.board-row.is-departed .via,
+.board-row.is-departed .c-carrier {
+  opacity: 0.55;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* ---------- Линии ---------- */
+
+.view-routes {
+  padding: 20px var(--pad) 32px;
+}
+
+.routes-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  margin-bottom: 20px;
+}
+
+.search input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #2a313b;
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--text);
+  font: 400 16px var(--sans);
+}
+
+.search {
+  flex: 1 1 280px;
+  max-width: 420px;
+}
+
+.search input::placeholder {
+  color: #6c7480;
+}
+
+.routes-day {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  list-style: none;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.routes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 16px;
+}
+
+.routes-empty {
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.route-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+}
+
+.route-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.route-platform {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--amber);
+  color: #111;
+}
+
+.route-dest {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 28px;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.route-tag {
+  padding: 3px 8px;
+  border: 1px solid var(--orange);
+  border-radius: 6px;
+  color: var(--orange);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+.route-via {
+  margin-top: -6px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.route-carriers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font-size: 14px;
+}
+
+.route-carrier {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.route-carrier .badge {
+  font-size: 11px;
+}
+
+.times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+}
+
+.time-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: var(--panel-2);
+  border: 1px solid #262d36;
+  color: var(--tile-text);
+  font: 800 15px / 1.2 var(--mono);
+}
+
+.time-chip small {
+  font: 400 11px var(--sans);
+  color: var(--orange);
+}
+
+.time-chip.is-past {
+  color: #5d6570;
+  border-color: transparent;
+}
+
+.time-chip.is-off {
+  color: #4a515b;
+  border-style: dashed;
+  border-color: #262d36;
+  background: transparent;
+}
+
+.time-chip.is-next {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: #111;
+}
+
+.time-chip.is-next small {
+  color: #5a3d00;
+}
+
+.route-next {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.route-next strong {
+  color: var(--amber);
+  font-family: var(--mono);
+}
+
+.route-next.is-done {
+  color: #5d6570;
+}
+
+/* ---------- Инфо лента ---------- */
+
+.ticker {
+  display: flex;
+  align-items: stretch;
+  flex: none;
+  height: clamp(36px, 5vh, 56px);
+  border-top: 1px solid #2a313b;
+  background: #000;
+  font-size: clamp(14px, 2.2vh, 22px);
+}
+
+.ticker-label {
+  display: grid;
+  place-items: center;
+  padding: 0 var(--pad);
+  background: var(--amber);
+  color: #111;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ticker-window {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.ticker-track {
+  display: flex;
+  white-space: pre;
+  color: var(--amber);
+  font-family: var(--sans);
+  animation: ticker 60s linear infinite;
+}
+
+@keyframes ticker {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------- Мали екрани ---------- */
+
+@media (max-width: 899px) {
+  :root {
+    --pad: 16px;
+    --tw: min(26px, calc((100vw - 2 * var(--pad) - 20px - (7 + var(--dest-chars)) * var(--gap)) / (7 + var(--dest-chars))));
+  }
+
+  .top {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+
+  .top {
+    column-gap: 10px;
+  }
+
+  .brand {
+    flex: 1 1 0;
+  }
+
+  .brand h1 {
+    font-size: 20px;
+  }
+
+  .station {
+    overflow: hidden;
+    font-size: 11px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .brand-icon {
+    width: 40px;
+    height: 40px;
+    padding: 7px;
+  }
+
+  .clock-time {
+    font-size: 24px;
+  }
+
+  .clock-date {
+    font-size: 11px;
+  }
+
+  .tabs {
+    order: 3;
+    flex: 1 1 100%;
+  }
+
+  .tab {
+    flex: 1;
+  }
+
+  .icon-btn {
+    display: none;
+  }
+
+  .view-board {
+    overflow: auto;
+  }
+
+  .board-head {
+    display: none;
+  }
+
+  .board-row {
+    grid-template-columns: calc(5 * var(--step)) minmax(0, 1fr) auto calc(2 * var(--step));
+    grid-template-areas:
+      "time dest dest platform"
+      "carrier carrier status status";
+    column-gap: 10px;
+    row-gap: 8px;
+    padding: 10px 0;
+  }
+
+  .c-time { grid-area: time; }
+  .c-dest { grid-area: dest; }
+  .c-platform { grid-area: platform; }
+  .c-carrier { grid-area: carrier; min-height: 0; font-size: 14px; }
+  .c-status { grid-area: status; justify-self: end; line-height: 1.4; font-size: 14px; }
+  .c-line { display: none; }
+
+  .via {
+    font-size: 12px;
+  }
+
+  .next-day {
+    font-size: 12px;
+  }
+
+  .ticker-label {
+    padding: 0 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track,
+  .s-final,
+  .s-boarding::before,
+  .s-final::before {
+    animation: none;
+  }
+
+  .ticker-window {
+    overflow-x: auto;
+  }
+}

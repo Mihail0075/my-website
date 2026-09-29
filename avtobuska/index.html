@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#06080b" />
+  <title>Заминувања — Автобуска станица Прилеп</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@800&family=Roboto+Condensed:wght@400;700&display=swap" />
+  <link rel="stylesheet" href="tabla.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="100%" height="100%">
+            <path fill="currentColor" d="M4 16c0 .88.39 1.67 1 2.22V20a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1h8v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4S4 2.5 4 6v10Zm3.5 1a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm9 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm1.5-6H6V6h12v5Z"/>
+          </svg>
+        </span>
+        <div>
+          <h1 data-i18n="departures">Заминувања</h1>
+          <p class="station" data-i18n="station">Автобуска станица Прилеп</p>
+        </div>
+      </div>
+
+      <nav class="tabs" aria-label="Приказ">
+        <a class="tab" href="#tabla" data-view="tabla">Табла <small>Board</small></a>
+        <a class="tab" href="#linii" data-view="linii">Линии <small>Routes</small></a>
+      </nav>
+
+      <div class="clock">
+        <time id="clock-time" class="clock-time">--:--<span>:--</span></time>
+        <span id="clock-date" class="clock-date"></span>
+      </div>
+
+      <button type="button" id="fullscreen" class="icon-btn" title="Цел екран (F)" aria-label="Цел екран">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path fill="currentColor" d="M4 4h6v2H6v4H4V4Zm10 0h6v6h-2V6h-4V4ZM4 14h2v4h4v2H4v-6Zm14 0h2v6h-6v-2h4v-4Z"/>
+        </svg>
+      </button>
+    </header>
+
+    <main id="view-tabla" class="view view-board">
+      <div class="board" role="table" aria-label="Следни поаѓања од Автобуска станица Прилеп">
+        <div class="board-row board-head" role="row">
+          <span class="cell c-time" role="columnheader" data-i18n="colTime">Време</span>
+          <span class="cell c-line" role="columnheader" data-i18n="colLine">Линија</span>
+          <span class="cell c-dest" role="columnheader" data-i18n="colDest">Дестинација</span>
+          <span class="cell c-carrier" role="columnheader" data-i18n="colCarrier">Превозник</span>
+          <span class="cell c-platform" role="columnheader" data-i18n="colPlatform">Перон</span>
+          <span class="cell c-status" role="columnheader" data-i18n="colStatus">Статус</span>
+        </div>
+        <div id="board-rows" role="rowgroup"></div>
+      </div>
+    </main>
+
+    <main id="view-linii" class="view view-routes" hidden>
+      <div class="routes-toolbar">
+        <label class="search">
+          <span class="sr-only">Пребарај дестинација</span>
+          <input type="search" id="route-search" placeholder="Пребарај дестинација…" autocomplete="off" />
+        </label>
+        <p id="routes-day" class="routes-day"></p>
+        <ul class="legend">
+          <li><span class="time-chip is-next">08:40</span> следно</li>
+          <li><span class="time-chip is-past">06:25</span> заминат</li>
+          <li><span class="time-chip is-off">09:35</span> не сообраќа денес</li>
+        </ul>
+      </div>
+      <div id="routes" class="routes-grid"></div>
+    </main>
+
+    <footer class="ticker">
+      <span class="ticker-label">Инфо</span>
+      <div class="ticker-window">
+        <div id="ticker-track" class="ticker-track"></div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="vozen-red.js"></script>
+  <script src="tabla.js"></script>
+</body>
+</html>
