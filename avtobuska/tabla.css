@@ -18,11 +18,11 @@
   --mono: "JetBrains Mono", "DejaVu Sans Mono", Consolas, monospace;
   --sans: "Roboto Condensed", "Arial Narrow", system-ui, sans-serif;
 
-  --tw: clamp(14px, 1.7vw, 40px);           /* ширина на една плочка */
+  --tw: clamp(14px, 1.9vw, 44px);           /* ширина на една плочка */
   --gap: 2px;
   --step: calc(var(--tw) + var(--gap));
   --dest-chars: 12;
-  --line-chars: 6;
+  --platform-tiles: 0;
   --pad: clamp(16px, 2vw, 40px);
 
   color-scheme: dark;
@@ -226,15 +226,26 @@ body {
   display: grid;
   grid-template-columns:
     calc(5 * var(--step))
-    calc(var(--line-chars) * var(--step))
     calc(var(--dest-chars) * var(--step))
     minmax(0, 1fr)
-    calc(4 * var(--step))
     minmax(0, 1.1fr);
   column-gap: calc(var(--tw) * 0.9);
   align-items: start;
   padding: calc(var(--tw) * 0.3) 0;
   border-bottom: 1px solid var(--line);
+}
+
+.has-platform .board-row {
+  grid-template-columns:
+    calc(5 * var(--step))
+    calc(var(--dest-chars) * var(--step))
+    minmax(0, 1fr)
+    calc(4 * var(--step))
+    minmax(0, 1.1fr);
+}
+
+:root:not(.has-platform) .c-platform {
+  display: none;
 }
 
 #board-rows .board-row:nth-child(even) {
@@ -551,15 +562,6 @@ body {
   letter-spacing: 0.03em;
 }
 
-.route-tag {
-  padding: 3px 8px;
-  border: 1px solid var(--orange);
-  border-radius: 6px;
-  color: var(--orange);
-  font-size: 12px;
-  letter-spacing: 0.06em;
-}
-
 .route-via {
   margin-top: -6px;
   color: var(--muted);
@@ -695,7 +697,8 @@ body {
 @media (max-width: 899px) {
   :root {
     --pad: 16px;
-    --tw: min(26px, calc((100vw - 2 * var(--pad) - 20px - (7 + var(--dest-chars)) * var(--gap)) / (7 + var(--dest-chars))));
+    --tiles: calc(5 + var(--dest-chars) + var(--platform-tiles));
+    --tw: min(26px, calc((100vw - 2 * var(--pad) - 20px - var(--tiles) * var(--gap)) / var(--tiles)));
   }
 
   .top {
@@ -758,10 +761,10 @@ body {
   }
 
   .board-row {
-    grid-template-columns: calc(5 * var(--step)) minmax(0, 1fr) auto calc(2 * var(--step));
+    grid-template-columns: calc(5 * var(--step)) minmax(0, 1fr) auto;
     grid-template-areas:
-      "time dest dest platform"
-      "carrier carrier status status";
+      "time dest dest"
+      "carrier carrier status";
     column-gap: 10px;
     row-gap: 8px;
     padding: 10px 0;
@@ -772,7 +775,13 @@ body {
   .c-platform { grid-area: platform; }
   .c-carrier { grid-area: carrier; min-height: 0; font-size: 14px; }
   .c-status { grid-area: status; justify-self: end; line-height: 1.4; font-size: 14px; }
-  .c-line { display: none; }
+
+  .has-platform .board-row {
+    grid-template-columns: calc(5 * var(--step)) minmax(0, 1fr) auto calc(2 * var(--step));
+    grid-template-areas:
+      "time dest dest platform"
+      "carrier carrier status status";
+  }
 
   .via {
     font-size: 12px;

@@ -27,7 +27,7 @@
   const T = {
     mk: {
       departures: 'Заминувања', station: 'Автобуска станица Прилеп',
-      colTime: 'Време', colLine: 'Линија', colDest: 'Дестинација',
+      colTime: 'Време', colDest: 'Дестинација',
       colCarrier: 'Превозник', colPlatform: 'Перон', colStatus: 'Статус',
       via: 'преку',
       tomorrow: 'утре',
@@ -42,7 +42,7 @@
     },
     en: {
       departures: 'Departures', station: 'Prilep Bus Station',
-      colTime: 'Time', colLine: 'Line', colDest: 'Destination',
+      colTime: 'Time', colDest: 'Destination',
       colCarrier: 'Carrier', colPlatform: 'Platform', colStatus: 'Remarks',
       via: 'via',
       tomorrow: 'tomorrow',
@@ -114,7 +114,8 @@
     sun: [7]
   };
   const DAY_SHORT = ['пон', 'вто', 'сре', 'чет', 'пет', 'саб', 'нед'];
-  const DAY_LABELS = { weekdays: 'пон–пет', 'mon-sat': 'пон–саб', weekend: 'саб–нед', sat: 'саб', sun: 'нед' };
+  // Како во официјалниот возен ред: без ознака = пон–саб, * = секој ден, и во недела.
+  const DAY_LABELS = { daily: '*', weekdays: 'пон–пет', weekend: 'саб–нед', sat: 'саб', sun: 'само нед' };
 
   const daysOf = (dep, route) => dep.days || route.days || 'daily';
   const runsOn = (dep, route, day) => {
@@ -124,14 +125,17 @@
   const daysLabel = days =>
     Array.isArray(days) ? days.map(d => DAY_SHORT[d - 1]).join(', ') : DAY_LABELS[days] || '';
 
+  const viaOf = (dep, route) => dep.via || route.via || '';
+  const stopsOf = (dep, route) => viaOf(dep, route).split(',').map(s => s.trim()).filter(Boolean);
+  const destName = route => (lang === 'mk' ? route.destination : route.en || translit(route.destination));
+
   DATA.routes.forEach(route => {
     route.departures.sort((a, b) => toMinutes(a.time) - toMinutes(b.time));
-    route.departures.forEach((dep, i) => {
-      const carrier = DATA.carriers[dep.carrier] || { name: dep.carrier, code: '??', color: '#555' };
-      dep.carrierInfo = carrier;
-      dep.code = `${carrier.code} ${route.line + i + 1}`;
+    route.departures.forEach(dep => {
+      dep.carrierInfo = DATA.carriers[dep.carrier] || { name: dep.carrier, code: '??', color: '#555' };
     });
   });
+  const hasPlatform = DATA.routes.some(route => route.platform);
 
   function departuresOn(date) {
     const day = isoDay(date);
@@ -144,7 +148,7 @@
         list.push({ at, route, dep });
       });
     });
-    return list.sort((a, b) => a.at - b.at || a.route.line - b.route.line);
+    return list.sort((a, b) => a.at - b.at || a.route.destination.localeCompare(b.route.destination));
   }
 
   function upcoming(t, count) {
@@ -192,7 +196,7 @@
     const flaps = el('span', 'flaps', { 'aria-hidden': 'true' });
     for (let i = 0; i < width; i++) {
       const flap = el('span', 'flap');
-      flap.textContent = ' ';
+      flap.textContent = '\u00a0';
       flap.dataset.ch = ' ';
       flaps.appendChild(flap);
     }
@@ -203,7 +207,7 @@
   }
 
   function paint(flap, ch) {
-    flap.textContent = ch === ' ' ? ' ' : ch;
+    flap.textContent = ch === ' ' ? '\u00a0' : ch;
   }
 
   function flipTo(flap, ch, index) {
@@ -239,10 +243,12 @@
 
   // Ширина на колоните (во плочки) според најдолгиот текст на двата јазика.
   const widest = texts => Math.max(...texts.flatMap(text => [text.length, translit(text).length]));
-  const destChars = Math.min(18, Math.max(10, widest(DATA.routes.map(r => r.destination))));
-  const lineChars = widest(DATA.routes.flatMap(r => r.departures.map(dep => dep.code)));
-  document.documentElement.style.setProperty('--dest-chars', destChars);
-  document.documentElement.style.setProperty('--line-chars', lineChars);
+  const destChars = Math.min(18, Math.max(10, widest(DATA.routes.map(r => r.destination)),
+    widest(DATA.routes.map(r => r.en || ''))));
+  const root = document.documentElement;
+  root.style.setProperty('--dest-chars', destChars);
+  root.style.setProperty('--platform-tiles', hasPlatform ? 2 : 0);
+  root.classList.toggle('has-platform', hasPlatform);
 
   const boardView = document.getElementById('view-tabla');
   const boardHead = boardView.querySelector('.board-head');
@@ -255,7 +261,6 @@
     const nextDay = el('span', 'next-day');
     time.appendChild(nextDay);
 
-    const line = flapCell('c-line', lineChars);
     const dest = flapCell('c-dest', destChars);
     const via = el('span', 'via');
     via.textContent = '\u00a0';
@@ -266,12 +271,12 @@
     const carrierName = el('span', 'carrier-name');
     carrier.append(badge, carrierName);
 
-    const platform = flapCell('c-platform', 2);
+    const platform = hasPlatform ? flapCell('c-platform', 2) : null;
     const status = el('div', 'cell c-status', { role: 'cell' });
 
-    row.append(time, line, dest, carrier, platform, status);
+    row.append(...[time, dest, carrier, platform, status].filter(Boolean));
     rowsEl.appendChild(row);
-    return { row, time, nextDay, line, dest, via, badge, carrierName, platform, status };
+    return { row, time, nextDay, dest, via, badge, carrierName, platform, status };
   }
 
   function buildRows() {
@@ -299,13 +304,13 @@
 
       setFlaps(r.time, d.dep.time);
       r.nextDay.textContent = d.nextDay ? T[lang].tomorrow : '';
-      setFlaps(r.line, tr(d.dep.code));
-      setFlaps(r.dest, tr(d.route.destination));
-      r.via.textContent = d.route.via ? `${T[lang].via} ${tr(d.route.via)}` : ' ';
+      setFlaps(r.dest, destName(d.route));
+      const via = viaOf(d.dep, d.route);
+      r.via.textContent = via ? `${T[lang].via} ${tr(via)}` : '\u00a0';
       r.badge.textContent = tr(carrier.code);
       r.badge.style.background = carrier.color;
       r.carrierName.textContent = tr(carrier.name);
-      setFlaps(r.platform, String(d.route.platform).padStart(2, ' '));
+      if (r.platform) setFlaps(r.platform, String(d.route.platform || '').padStart(2, ' '));
       r.status.textContent = statusText(status, d);
       r.status.className = `cell c-status s-${status}`;
       r.row.className = `board-row is-${status}${d.nextDay ? ' is-next-day' : ''}`;
@@ -348,8 +353,9 @@
     routesDay.textContent = `Денес е ${T.mk.days[t.getDay()]} — поаѓањата што не сообраќаат денес се затемнети.`;
     routesEl.replaceChildren();
 
-    const matches = DATA.routes.filter(r =>
-      !query || searchKey(`${r.destination} ${r.via || ''}`).includes(query));
+    const matches = DATA.routes.filter(r => !query || searchKey([
+      r.destination, r.en || '', ...r.departures.map(dep => viaOf(dep, r))
+    ].join(' ')).includes(query));
 
     if (!matches.length) {
       const empty = el('p', 'routes-empty');
@@ -359,27 +365,35 @@
     }
 
     matches.forEach(route => {
+      // Поаѓањата на линијата и автобусите на други линии што поминуваат низ оваа дестинација.
+      const entries = [];
+      DATA.routes.forEach(other => {
+        other.departures.forEach(dep => {
+          if (other === route) entries.push({ dep, route });
+          else if (stopsOf(dep, other).includes(route.destination)) entries.push({ dep, route: other, through: true });
+        });
+      });
+      entries.sort((a, b) => toMinutes(a.dep.time) - toMinutes(b.dep.time));
+
       const card = el('article', 'route-card');
       const head = el('header', 'route-head');
-      const line = el('span', 'route-line');
-      line.textContent = `Линија ${route.line}`;
-      const platform = el('span', 'route-platform');
-      platform.textContent = `Перон ${route.platform}`;
-      head.append(line, platform);
+      const from = el('span', 'route-line');
+      from.textContent = route.international ? 'Меѓународна линија' : 'Прилеп →';
+      head.appendChild(from);
+      if (route.platform) {
+        const platform = el('span', 'route-platform');
+        platform.textContent = `Перон ${route.platform}`;
+        head.appendChild(platform);
+      }
 
       const title = el('h2', 'route-dest');
       title.textContent = route.destination;
-      if (route.international) {
-        const tag = el('span', 'route-tag');
-        tag.textContent = 'меѓународна';
-        title.appendChild(tag);
-      }
       const via = el('p', 'route-via');
       via.textContent = route.via ? `преку ${route.via}` : 'директна линија';
 
       const carriers = el('p', 'route-carriers');
       const seen = new Set();
-      route.departures.forEach(dep => {
+      entries.forEach(({ dep }) => {
         if (seen.has(dep.carrier)) return;
         seen.add(dep.carrier);
         const c = dep.carrierInfo;
@@ -387,15 +401,15 @@
         const badge = el('span', 'badge');
         badge.textContent = c.code;
         badge.style.background = c.color;
-        item.append(badge, c.name);
+        item.append(badge, c.city ? `${c.name} (${c.city})` : c.name);
         carriers.appendChild(item);
       });
 
       const times = el('ul', 'times');
       let next = null;
-      route.departures.forEach(dep => {
+      entries.forEach(({ dep, route: owner, through }) => {
         const chip = el('li', 'time-chip');
-        const runs = runsOn(dep, route, day);
+        const runs = runsOn(dep, owner, day);
         const mins = toMinutes(dep.time);
         if (!runs) chip.classList.add('is-off');
         else if (mins < nowMin) chip.classList.add('is-past');
@@ -403,14 +417,16 @@
           chip.classList.add('is-next');
           next = dep;
         }
-        chip.title = `${dep.code} · ${dep.carrierInfo.name}`;
+        chip.title = through ? `${dep.carrierInfo.name} · за ${owner.destination}` : dep.carrierInfo.name;
         chip.textContent = dep.time;
-        const days = daysLabel(daysOf(dep, route));
-        if (days) {
+        const notes = [daysLabel(daysOf(dep, owner))];
+        if (through) notes.push(`→ ${owner.destination}`);
+        else if (dep.via) notes.push(`преку ${dep.via}`);
+        notes.filter(Boolean).forEach(note => {
           const mark = el('small');
-          mark.textContent = days;
+          mark.textContent = note;
           chip.appendChild(mark);
-        }
+        });
         times.appendChild(chip);
       });
 
