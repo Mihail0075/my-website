@@ -12,6 +12,7 @@ export const POST = route(async (req) => {
   return {
     senderToken: parcel.senderToken,
     trackingNumber: parcel.trackingNumber,
+    shortNumber: parcel.shortNumber,
     priceDenars: parcel.priceDenars,
     destinationStationId: parcel.destinationStationId,
   };

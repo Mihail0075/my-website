@@ -10,7 +10,7 @@ import { LangSwitch } from "../LangSwitch";
 import { QrClient } from "../QrClient";
 import { SendForm, type CreatedParcel, type StationOption } from "../SendForm";
 import { DriverPanel } from "../staff/DriverPanel";
-import { Alert, Button, Code } from "../ui";
+import { Alert, Button, Code, ShortNo } from "../ui";
 import { Keypad } from "./Keypad";
 import { LockerMap } from "./LockerMap";
 
@@ -278,7 +278,11 @@ export function KioskApp({
               <h1 className="text-5xl font-extrabold">{t.sender.paidTitle}</h1>
               <div>
                 <p className="text-xl font-semibold uppercase tracking-wide text-muted">{t.sender.trackingNumber}</p>
-                <Code value={screen.parcel.trackingNumber} size="xl" />
+                <div className="flex flex-wrap items-center gap-4">
+                  <ShortNo n={screen.parcel.shortNumber} size="xl" />
+                  <Code value={screen.parcel.trackingNumber} size="lg" />
+                </div>
+                <p className="mt-2 text-xl text-muted">{t.staff.counter.writeOnParcel}</p>
               </div>
               <div className="rounded-[var(--radius-card)] border-4 border-accent bg-accent-soft p-5">
                 <p className="text-xl font-semibold uppercase tracking-wide text-muted">{t.sender.pinTitle}</p>

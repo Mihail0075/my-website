@@ -1,6 +1,5 @@
 import { sql } from "drizzle-orm";
-import { migrate } from "drizzle-orm/node-postgres/migrator";
-import { db } from "@/db";
+import { db, isPglite } from "@/db";
 import { lockers, stations, users, type LockerSize } from "@/db/schema";
 import { hmac } from "@/lib/codes";
 import { hashPassword } from "@/lib/password";
@@ -14,7 +13,8 @@ export async function resetDb(layout: { size: LockerSize; count: number }[] = [
   { size: "L", count: 1 },
 ]) {
   if (!migrated) {
-    await migrate(db, { migrationsFolder: "drizzle" });
+    const { migrate } = isPglite ? await import("drizzle-orm/pglite/migrator") : await import("drizzle-orm/node-postgres/migrator");
+    await migrate(db as never, { migrationsFolder: "drizzle" });
     migrated = true;
   }
   await db.execute(

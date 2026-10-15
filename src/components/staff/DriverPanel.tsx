@@ -4,12 +4,14 @@ import { useCallback, useEffect, useState } from "react";
 import type { LockerSize, ParcelStatus } from "@/db/schema";
 import { errorMessage, fmt, formatDateTime } from "@/i18n";
 import { api, ApiError } from "@/lib/api";
+import { DeliveryFilterTabs, DeliveryTag, type DeliveryFilter } from "../DeliveryTag";
 import { useI18n } from "../I18nProvider";
-import { Alert, Button, inputClass } from "../ui";
+import { Alert, Button, inputClass, ShortNo, shortNo } from "../ui";
 
 export type SlimParcel = {
   id: string;
   trackingNumber: string;
+  shortNumber: number;
   size: LockerSize;
   status: ParcelStatus;
   lockerNumber: number | null;
@@ -34,6 +36,7 @@ export function DriverPanel({ stationId, hasCounter, big = false }: { stationId:
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState("");
+  const [kind, setKind] = useState<DeliveryFilter>("ALL");
 
   const load = useCallback(async () => {
     try {
@@ -80,7 +83,13 @@ export function DriverPanel({ stationId, hasCounter, big = false }: { stationId:
     setDoor(null);
   }
 
-  const match = (p: SlimParcel) => !filter || p.trackingNumber.includes(filter.replace(/\s/g, ""));
+  const match = (p: SlimParcel) => {
+    if (kind !== "ALL" && p.deliveryType !== kind) return false;
+    const q = filter.replace(/[\s#]/g, "");
+    if (!q) return true;
+    // Up to 4 digits = the short number on the label; longer = the full parcel number.
+    return q.length <= 4 ? p.shortNumber === Number(q) : p.trackingNumber.includes(q);
+  };
   const btn = big ? "lg" : "md";
 
   /** Scanner/typed number + Enter: do the obvious action for a single match. */
@@ -99,7 +108,7 @@ export function DriverPanel({ stationId, hasCounter, big = false }: { stationId:
         <div className="sticky top-2 z-10 rounded-[var(--radius-card)] border-4 border-accent bg-accent-soft p-5 shadow-lg" role="alert">
           <p className={`font-extrabold text-ink ${big ? "text-4xl" : "text-2xl"}`}>{fmt(d.lockerOpen, { n: door.lockerNumber })}</p>
           <p className="mt-1 text-body">
-            {fmt(door.kind === "put" ? d.putInto : d.takeFrom, { tracking: door.parcel.trackingNumber, n: door.lockerNumber })}
+            {fmt(door.kind === "put" ? d.putInto : d.takeFrom, { tracking: `${shortNo(door.parcel.shortNumber)} (${door.parcel.trackingNumber})`, n: door.lockerNumber })}
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             {door.kind === "put" ? (
@@ -123,6 +132,8 @@ export function DriverPanel({ stationId, hasCounter, big = false }: { stationId:
       )}
 
       {error && <Alert tone="danger">{error}</Alert>}
+
+      <DeliveryFilterTabs value={kind} onChange={setKind} />
 
       <form
         className="flex gap-2"
@@ -232,11 +243,14 @@ function Section({
           {items.map((p) => (
             <li key={p.id} className="flex flex-col gap-3 rounded-[var(--radius-std)] border border-line bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="font-mono text-lg font-bold tracking-wider text-ink">{p.trackingNumber}</p>
+                <p className="flex flex-wrap items-center gap-2">
+                  <ShortNo n={p.shortNumber} />
+                  <DeliveryTag type={p.deliveryType} />
+                  <span className="font-mono text-sm text-muted">{p.trackingNumber}</span>
+                </p>
                 <p className="text-sm text-muted">
                   {t.sizes[p.size]} ({p.size}) · {p.recipientName}
                   {p.lockerNumber !== null ? ` · ${t.staff.admin.locker} ${p.lockerNumber}` : p.status === "AT_ORIGIN" ? ` · ${d.atCounter}` : ""}
-                  {p.deliveryType === "COURIER" ? " · 🛵" : ""}
                   {p.status === "EXPIRED" && p.pickupDeadline ? ` · ${formatDateTime(p.pickupDeadline, lang)}` : ""}
                 </p>
               </div>

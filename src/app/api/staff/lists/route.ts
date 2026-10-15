@@ -7,6 +7,7 @@ function slim(p: ParcelRow) {
   return {
     id: p.id,
     trackingNumber: p.trackingNumber,
+    shortNumber: p.shortNumber,
     size: p.size,
     status: p.status,
     lockerNumber: p.lockerNumber,

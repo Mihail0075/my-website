@@ -100,3 +100,13 @@ export function Code({ value, size = "lg", label }: { value: string; size?: "md"
     </span>
   );
 }
+
+/** "#0042": the short 4-digit parcel number (cycles 1–9999) staff use to find parcels. */
+export function shortNo(n: number): string {
+  return `#${String(n).padStart(4, "0")}`;
+}
+
+export function ShortNo({ n, size = "md" }: { n: number; size?: "sm" | "md" | "lg" | "xl" }) {
+  const sizes = { sm: "text-sm px-1.5", md: "text-lg px-2", lg: "text-3xl px-3 py-1", xl: "text-6xl px-4 py-2" };
+  return <span className={`inline-block rounded-[var(--radius-tight)] bg-accent font-mono font-black text-ink ${sizes[size]}`}>{shortNo(n)}</span>;
+}

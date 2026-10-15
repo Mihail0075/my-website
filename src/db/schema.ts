@@ -4,12 +4,19 @@ import {
   index,
   integer,
   pgEnum,
+  pgSequence,
   pgTable,
   text,
   timestamp,
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
+
+/**
+ * Short parcel number shown in big print on labels and screens so staff find a
+ * parcel quickly: 1…9999, then starts again from 1.
+ */
+export const parcelShortNumber = pgSequence("parcel_short_number_seq", { startWith: 1, minValue: 1, maxValue: 9999, increment: 1, cycle: true });
 
 export const lockerSize = pgEnum("locker_size", ["S", "M", "L"]);
 
@@ -87,6 +94,9 @@ export const parcels = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     trackingNumber: text("tracking_number").notNull().unique(),
+    shortNumber: integer("short_number")
+      .notNull()
+      .default(sql`nextval('parcel_short_number_seq')`),
     originStationId: uuid("origin_station_id")
       .notNull()
       .references(() => stations.id),

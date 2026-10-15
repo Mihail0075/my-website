@@ -164,8 +164,8 @@ export async function getStationByCode(code: string): Promise<Station | null> {
   return s ?? null;
 }
 
-async function getStationById(id: string): Promise<Station | null> {
-  const [s] = await db.select().from(stations).where(eq(stations.id, id)).limit(1);
+async function getStationById(id: string, tx: DbOrTx = db): Promise<Station | null> {
+  const [s] = await tx.select().from(stations).where(eq(stations.id, id)).limit(1);
   return s ?? null;
 }
 
@@ -389,7 +389,7 @@ export async function unloadParcel(parcelId: string, stationId: string, userId: 
       await openLocker(tx, locker);
       lockerNumber = locker.number;
     } else {
-      const station = await getStationById(stationId);
+      const station = await getStationById(stationId, tx);
       expect(!!station?.hasCounter);
     }
     const now = new Date();
@@ -635,12 +635,15 @@ export async function counterLists(stationId: string) {
   return { waitingDriver, forPickup };
 }
 
-export async function adminParcels(status?: ParcelStatus, q?: string) {
+export async function adminParcels(status?: ParcelStatus, q?: string, delivery?: "LOCKER" | "COURIER") {
   await sweep();
-  const search = q?.trim();
+  const search = q?.trim().replace(/^#/, "");
   const where = and(
     status ? eq(parcels.status, status) : undefined,
-    search
+    delivery ? eq(parcels.deliveryType, delivery) : undefined,
+    search && /^\d{1,4}$/.test(search)
+      ? eq(parcels.shortNumber, Number(search))
+      : search
       ? sql`(${parcels.trackingNumber} ilike ${"%" + search + "%"} or ${parcels.senderName} ilike ${"%" + search + "%"} or ${parcels.recipientName} ilike ${"%" + search + "%"} or ${parcels.senderPhone} ilike ${"%" + search + "%"} or ${parcels.recipientPhone} ilike ${"%" + search + "%"})`
       : undefined,
   );

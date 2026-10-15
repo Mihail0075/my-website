@@ -84,7 +84,7 @@ export type LockerView = {
   size: LockerSize;
   doorOpen: boolean;
   outOfService: boolean;
-  parcel: { id: string; trackingNumber: string; status: string } | null;
+  parcel: { id: string; trackingNumber: string; shortNumber: number; status: string } | null;
 };
 
 export async function stationLockers(stationId: string): Promise<LockerView[]> {
@@ -97,6 +97,7 @@ export async function stationLockers(stationId: string): Promise<LockerView[]> {
       outOfService: lockers.outOfService,
       parcelId: parcels.id,
       trackingNumber: parcels.trackingNumber,
+      shortNumber: parcels.shortNumber,
       status: parcels.status,
     })
     .from(lockers)
@@ -109,7 +110,7 @@ export async function stationLockers(stationId: string): Promise<LockerView[]> {
     size: r.size,
     doorOpen: r.doorOpen,
     outOfService: r.outOfService,
-    parcel: r.parcelId ? { id: r.parcelId, trackingNumber: r.trackingNumber!, status: r.status! } : null,
+    parcel: r.parcelId ? { id: r.parcelId, trackingNumber: r.trackingNumber!, shortNumber: r.shortNumber!, status: r.status! } : null,
   }));
 }
 

@@ -39,6 +39,8 @@ const en: Dict = {
     dims: "up to {h} × {w} × {d} cm",
   },
   delivery: {
+    tagLocker: "Bus station",
+    tagCourier: "To address",
     LOCKER: "Pick up from a locker at the bus station",
     COURIER: "Delivery to an address by a partner courier (Wolt, Korpa…)",
     courierNote: "The courier collects the parcel from the locker with the PIN and brings it to the address. The courier charges separately for the station-to-door trip.",
@@ -251,6 +253,7 @@ const en: Dict = {
       handover: "Hand over",
       pinPrompt: "Recipient's PIN",
       handedOver: "Handed over.",
+      writeOnParcel: "Write this number large on the parcel (or stick on the label).",
     },
     driver: {
       title: "Driver",

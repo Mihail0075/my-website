@@ -19,6 +19,8 @@
 
 Плаќањето со картичка е **симулирано** (означено „ТЕСТ РЕЖИМ“), а сандаците се **симулирани** додека не се поврзе хардверот. Види [`docs/HARDWARE.md`](docs/HARDWARE.md).
 
+**Инсталација на еден Windows компјутер (шалтер Прилеп):** [`windows/UPATSTVO.md`](windows/UPATSTVO.md). Таму базата е вградена (`DATABASE_URL=pglite:./data`), без PostgreSQL сервер.
+
 ## Технологија
 
 Next.js 16 (React 19, TypeScript), Tailwind CSS 4, PostgreSQL + Drizzle ORM, Vitest.

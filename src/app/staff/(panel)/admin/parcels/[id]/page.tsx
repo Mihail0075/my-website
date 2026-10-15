@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import { StatusBadge } from "@/components/StatusBadge";
 import { ParcelActions } from "@/components/staff/ParcelActions";
 import { Timeline } from "@/components/Timeline";
-import { Card, Code } from "@/components/ui";
+import { DeliveryTag } from "@/components/DeliveryTag";
+import { Card, Code, ShortNo } from "@/components/ui";
 import { formatDateTime, formatPrice, formatWeight, stationName } from "@/i18n";
 import { getI18n } from "@/i18n/server";
 import { requireStaffPage } from "@/lib/auth";
@@ -28,7 +29,11 @@ export default async function AdminParcel({ params }: { params: Promise<{ id: st
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Code value={parcel.trackingNumber} />
+        <span className="flex flex-wrap items-center gap-3">
+          <ShortNo n={parcel.shortNumber} size="lg" />
+          <Code value={parcel.trackingNumber} />
+          <DeliveryTag type={parcel.deliveryType} size="lg" />
+        </span>
         <StatusBadge status={parcel.status} />
       </div>
       <ParcelActions id={parcel.id} status={parcel.status} />

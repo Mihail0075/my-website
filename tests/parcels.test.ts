@@ -79,6 +79,15 @@ describe("pricing and input", () => {
   });
 });
 
+describe("short parcel number", () => {
+  it("counts 1…9999 and then starts again from 1", async () => {
+    await db.execute(sql`select setval('parcel_short_number_seq', 9998)`);
+    const nums: number[] = [];
+    for (let i = 0; i < 3; i++) nums.push((await createParcel(parcelInput(ctx.sk.id, ctx.pp.id), { via: "ONLINE" })).shortNumber);
+    expect(nums).toEqual([9999, 1, 2]);
+  });
+});
+
 describe("full self-service flow Skopje → Prilep", () => {
   it("goes from online order to pickup with a PIN", async () => {
     const created = await createParcel(parcelInput(ctx.sk.id, ctx.pp.id), { via: "ONLINE" });

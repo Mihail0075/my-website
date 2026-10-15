@@ -1,0 +1,2 @@
+CREATE SEQUENCE "public"."parcel_short_number_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 9999 START WITH 1 CACHE 1 CYCLE;--> statement-breakpoint
+ALTER TABLE "parcels" ADD COLUMN "short_number" integer DEFAULT nextval('parcel_short_number_seq') NOT NULL;

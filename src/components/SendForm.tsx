@@ -32,7 +32,7 @@ type FormState = {
 
 type Errors = Partial<Record<keyof FormState | "consent" | "payment", string>>;
 
-export type CreatedParcel = { senderToken: string; trackingNumber: string; priceDenars: number; destinationStationId: string; id?: string; pickupPin?: string };
+export type CreatedParcel = { senderToken: string; trackingNumber: string; shortNumber: number; priceDenars: number; destinationStationId: string; id?: string; pickupPin?: string };
 
 const STEP_FIELDS: (keyof FormState)[][] = [
   ["originStationId", "destinationStationId", "size", "weightKg"],

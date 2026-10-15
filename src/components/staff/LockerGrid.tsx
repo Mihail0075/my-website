@@ -6,7 +6,7 @@ import { errorMessage } from "@/i18n";
 import { api, ApiError } from "@/lib/api";
 import { lockerColumns } from "@/lib/lockerLayout";
 import { useI18n } from "../I18nProvider";
-import { Alert, Button } from "../ui";
+import { Alert, Button, shortNo } from "../ui";
 
 /**
  * Live view of a station's lockers. While hardware is simulated this is the
@@ -79,7 +79,7 @@ export function LockerGrid({ stationId, simulated }: { stationId: string; simula
               >
                 <span className="text-lg font-bold">{l.number}</span>
                 <span>{l.size}</span>
-                {l.parcel && <span className="font-mono text-[10px]">{l.parcel.trackingNumber}</span>}
+                {l.parcel && <span className="font-mono text-sm font-black">{shortNo(l.parcel.shortNumber)}</span>}
               </button>
             ))}
           </div>
@@ -90,7 +90,7 @@ export function LockerGrid({ stationId, simulated }: { stationId: string; simula
           <span className="font-bold">
             {a.locker} {current.number} ({current.size})
           </span>
-          {current.parcel && <span className="font-mono text-sm text-muted">{current.parcel.trackingNumber}</span>}
+          {current.parcel && <span className="font-mono text-sm text-muted">{shortNo(current.parcel.shortNumber)} · {current.parcel.trackingNumber}</span>}
           <Button onClick={() => action(current.id, "open")}>{a.openLocker}</Button>
           {simulated && current.doorOpen && (
             <Button variant="secondary" onClick={() => action(current.id, "close")}>

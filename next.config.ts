@@ -17,7 +17,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   // pg and nodemailer are Node-only; keep them out of the bundle.
-  serverExternalPackages: ["pg", "nodemailer"],
+  serverExternalPackages: ["pg", "nodemailer", "@electric-sql/pglite"],
   poweredByHeader: false,
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

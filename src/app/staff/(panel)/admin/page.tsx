@@ -1,18 +1,20 @@
 import Link from "next/link";
 import { StatusBadge } from "@/components/StatusBadge";
-import { inputClass } from "@/components/ui";
+import { DeliveryTag } from "@/components/DeliveryTag";
+import { inputClass, ShortNo } from "@/components/ui";
 import { parcelStatus, type ParcelStatus } from "@/db/schema";
 import { formatDateTime, formatPrice, stationName } from "@/i18n";
 import { getI18n } from "@/i18n/server";
 import { requireStaffPage } from "@/lib/auth";
 import { adminParcels, getStations } from "@/lib/services/parcels";
 
-export default async function AdminParcels({ searchParams }: { searchParams: Promise<{ status?: string; q?: string }> }) {
+export default async function AdminParcels({ searchParams }: { searchParams: Promise<{ status?: string; q?: string; delivery?: string }> }) {
   await requireStaffPage(["ADMIN"]);
   const { lang, t } = await getI18n();
-  const { status, q } = await searchParams;
+  const { status, q, delivery: d0 } = await searchParams;
+  const delivery = d0 === "LOCKER" || d0 === "COURIER" ? d0 : undefined;
   const valid = parcelStatus.enumValues.includes(status as ParcelStatus) ? (status as ParcelStatus) : undefined;
-  const [rows, stations] = await Promise.all([adminParcels(valid, q), getStations()]);
+  const [rows, stations] = await Promise.all([adminParcels(valid, q, delivery), getStations()]);
   const byId = new Map(stations.map((s) => [s.id, s]));
   const a = t.staff.admin;
 
@@ -35,6 +37,11 @@ export default async function AdminParcels({ searchParams }: { searchParams: Pro
             </option>
           ))}
         </select>
+        <select name="delivery" defaultValue={delivery ?? ""} aria-label={t.send.deliveryType} className={`${inputClass} sm:max-w-56`}>
+          <option value="">{t.common.all}</option>
+          <option value="LOCKER">🚌 {t.delivery.tagLocker}</option>
+          <option value="COURIER">🛵 {t.delivery.tagCourier}</option>
+        </select>
         <button className="min-h-12 rounded-[var(--radius-std)] bg-brand px-5 font-semibold text-white hover:bg-brand-hover">{t.common.search}</button>
       </form>
       <ul className="flex flex-col gap-2 md:hidden">
@@ -42,14 +49,18 @@ export default async function AdminParcels({ searchParams }: { searchParams: Pro
           <li key={p.id}>
             <Link href={`/staff/admin/parcels/${p.id}`} className="flex flex-col gap-1 rounded-[var(--radius-card)] border border-line bg-white p-4">
               <span className="flex items-center justify-between gap-2">
-                <span className="font-mono font-bold text-brand">{p.trackingNumber}</span>
+                <span className="flex items-center gap-2">
+                  <ShortNo n={p.shortNumber} size="sm" />
+                  <span className="font-mono font-bold text-brand">{p.trackingNumber}</span>
+                </span>
                 <span className="font-semibold">{formatPrice(p.priceDenars, lang)}</span>
               </span>
               <span className="text-sm text-muted">
                 {stationName(byId.get(p.originStationId)!, lang)} → {stationName(byId.get(p.destinationStationId)!, lang)} · {p.recipientName}
               </span>
-              <span>
+              <span className="flex flex-wrap gap-2">
                 <StatusBadge status={p.status} />
+                <DeliveryTag type={p.deliveryType} />
               </span>
             </Link>
           </li>
@@ -72,7 +83,8 @@ export default async function AdminParcels({ searchParams }: { searchParams: Pro
             {rows.map((p) => (
               <tr key={p.id} className="border-t border-line hover:bg-surface-alt">
                 <td className="px-3 py-2">
-                  <Link href={`/staff/admin/parcels/${p.id}`} className="font-mono font-bold text-brand underline">
+                  <Link href={`/staff/admin/parcels/${p.id}`} className="flex items-center gap-2 font-mono font-bold text-brand underline">
+                    <ShortNo n={p.shortNumber} size="sm" />
                     {p.trackingNumber}
                   </Link>
                 </td>
@@ -82,7 +94,12 @@ export default async function AdminParcels({ searchParams }: { searchParams: Pro
                 <td className="px-3 py-2">
                   <StatusBadge status={p.status} />
                 </td>
-                <td className="px-3 py-2">{p.recipientName}</td>
+                <td className="px-3 py-2">
+                  <span className="flex flex-col items-start gap-1">
+                    {p.recipientName}
+                    <DeliveryTag type={p.deliveryType} />
+                  </span>
+                </td>
                 <td className="px-3 py-2">{p.lockerNumber ?? "—"}</td>
                 <td className="px-3 py-2">{formatPrice(p.priceDenars, lang)}</td>
                 <td className="px-3 py-2 text-muted">{formatDateTime(p.createdAt, lang)}</td>

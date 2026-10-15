@@ -5,6 +5,7 @@ import { formatDateTime, stationName } from "@/i18n";
 import { getI18n } from "@/i18n/server";
 import { requireStaffPage } from "@/lib/auth";
 import { APP_NAME } from "@/lib/config";
+import { shortNo } from "@/components/ui";
 import { getParcelRow, getStations } from "@/lib/services/parcels";
 
 export const metadata = { title: "Label", robots: { index: false } };
@@ -30,8 +31,19 @@ export default async function LabelPage({ params }: { params: Promise<{ id: stri
       <PrintButton />
       <div className="flex h-[150mm] w-[100mm] flex-col border-2 border-black bg-white p-[5mm] text-black print:border-0">
         <div className="flex items-center justify-between border-b-2 border-black pb-2">
-          <span className="text-lg font-extrabold">{APP_NAME}</span>
-          <span className="text-3xl font-black">{parcel.size}</span>
+          <span className="font-mono text-5xl font-black leading-none">{shortNo(parcel.shortNumber)}</span>
+          <span className="text-right">
+            <span className="block text-sm font-extrabold">{APP_NAME}</span>
+            <span className="text-3xl font-black">{parcel.size}</span>
+          </span>
+        </div>
+        {/* Inverted band for address delivery so it stands out on the shelf. */}
+        <div
+          className={`my-2 py-1 text-center text-2xl font-black uppercase tracking-wide ${
+            parcel.deliveryType === "COURIER" ? "bg-black text-white" : "border-2 border-black"
+          }`}
+        >
+          {parcel.deliveryType === "COURIER" ? `🛵 ${t.delivery.tagCourier}` : `🚌 ${t.delivery.tagLocker}`}
         </div>
         <div className="grid grid-cols-2 border-b-2 border-black py-2">
           <div>
@@ -44,7 +56,7 @@ export default async function LabelPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
         <div className="flex flex-1 flex-col items-center justify-center gap-2 py-2">
-          <Qr value={tn} label={tn} className="h-[48mm] w-[48mm]" />
+          <Qr value={tn} label={tn} className="h-[38mm] w-[38mm]" />
           <p className="font-mono text-2xl font-bold tracking-widest">
             {tn.slice(0, 3)} {tn.slice(3, 6)} {tn.slice(6)}
           </p>

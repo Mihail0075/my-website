@@ -3,10 +3,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { errorMessage, fmt, formatDateTime } from "@/i18n";
 import { api, ApiError } from "@/lib/api";
+import { DeliveryFilterTabs, DeliveryTag, type DeliveryFilter } from "../DeliveryTag";
 import { useI18n } from "../I18nProvider";
 import { SendForm, type CreatedParcel, type StationOption } from "../SendForm";
 import { StatusBadge } from "../StatusBadge";
-import { Alert, Button, ButtonLink, Card, Code, inputClass } from "../ui";
+import { Alert, Button, ButtonLink, Card, Code, inputClass, ShortNo } from "../ui";
 import type { SlimParcel } from "./DriverPanel";
 
 type Lists = { waitingDriver: SlimParcel[]; forPickup: SlimParcel[] };
@@ -18,6 +19,10 @@ export function CounterPanel({ stationId, stations }: { stationId: string; stati
   const [lists, setLists] = useState<Lists | null>(null);
   const [created, setCreated] = useState<CreatedParcel | null>(null);
   const [formKey, setFormKey] = useState(0);
+  const [kind, setKind] = useState<DeliveryFilter>("ALL");
+  const byKind = (p: SlimParcel) => kind === "ALL" || p.deliveryType === kind;
+  const forPickup = lists?.forPickup.filter(byKind) ?? [];
+  const waitingDriver = lists?.waitingDriver.filter(byKind) ?? [];
   const [handover, setHandover] = useState<{ id: string; pin: string } | null>(null);
   const [message, setMessage] = useState<{ tone: "success" | "danger"; text: string } | null>(null);
 
@@ -55,6 +60,10 @@ export function CounterPanel({ stationId, stations }: { stationId: string; stati
         {created ? (
           <div className="flex flex-col gap-4">
             <Alert tone="success">{fmt(c.created, { tracking: created.trackingNumber })}</Alert>
+            <div className="flex items-center gap-3">
+              <ShortNo n={created.shortNumber} size="xl" />
+              <span className="text-muted">{t.staff.counter.writeOnParcel}</span>
+            </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-wide text-muted">{t.sender.trackingNumber}</p>
@@ -96,20 +105,21 @@ export function CounterPanel({ stationId, stations }: { stationId: string; stati
       </Card>
 
       <div className="flex flex-col gap-6">
+        <DeliveryFilterTabs value={kind} onChange={setKind} />
         {message && <Alert tone={message.tone}>{message.text}</Alert>}
         <Card>
           <h2 className="mb-3 text-xl font-bold">{c.readyAtCounter}</h2>
           {!lists ? (
             <p className="text-muted">{t.common.loading}</p>
-          ) : lists.forPickup.length === 0 ? (
+          ) : forPickup.length === 0 ? (
             <p className="text-muted">{t.staff.driver.nothing}</p>
           ) : (
             <ul className="flex flex-col gap-2">
-              {lists.forPickup.map((p) => (
+              {forPickup.map((p) => (
                 <li key={p.id} className="rounded-[var(--radius-std)] border border-line p-3">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div>
-                      <p className="font-mono font-bold tracking-wider text-ink">{p.trackingNumber}</p>
+                      <p className="flex flex-wrap items-center gap-2"><ShortNo n={p.shortNumber} /> <DeliveryTag type={p.deliveryType} /> <span className="font-mono text-sm text-muted">{p.trackingNumber}</span></p>
                       <p className="text-sm text-muted">
                         {p.recipientName} · {p.lockerNumber !== null ? `${t.staff.admin.locker} ${p.lockerNumber}` : t.staff.driver.atCounter}
                         {p.pickupDeadline ? ` · ${formatDateTime(p.pickupDeadline, lang)}` : ""}
@@ -153,14 +163,14 @@ export function CounterPanel({ stationId, stations }: { stationId: string; stati
           <h2 className="mb-3 text-xl font-bold">{c.waitingDriver}</h2>
           {!lists ? (
             <p className="text-muted">{t.common.loading}</p>
-          ) : lists.waitingDriver.length === 0 ? (
+          ) : waitingDriver.length === 0 ? (
             <p className="text-muted">{t.staff.driver.nothing}</p>
           ) : (
             <ul className="flex flex-col gap-2">
-              {lists.waitingDriver.map((p) => (
+              {waitingDriver.map((p) => (
                 <li key={p.id} className="flex items-center justify-between gap-2 rounded-[var(--radius-std)] border border-line p-3">
                   <div>
-                    <p className="font-mono font-bold tracking-wider text-ink">{p.trackingNumber}</p>
+                    <p className="flex flex-wrap items-center gap-2"><ShortNo n={p.shortNumber} /> <DeliveryTag type={p.deliveryType} /> <span className="font-mono text-sm text-muted">{p.trackingNumber}</span></p>
                     <p className="text-sm text-muted">
                       {t.sizes[p.size]} ({p.size}) · {p.lockerNumber !== null ? `${t.staff.admin.locker} ${p.lockerNumber}` : t.staff.driver.atCounter}
                     </p>
