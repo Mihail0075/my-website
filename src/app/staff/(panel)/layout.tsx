@@ -29,27 +29,27 @@ export default async function StaffLayout({ children }: { children: React.ReactN
   return (
     <div className="min-h-dvh">
       <header className="no-print border-b border-line bg-white">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-2">
-          <div className="flex items-center gap-4">
-            <Link href="/staff" className="flex min-h-11 items-center">
-              <Logo name={lang === "mk" ? APP_NAME : APP_NAME_EN} />
-            </Link>
-            <nav className="flex flex-wrap gap-1">
-              {links.map(([href, label]) => (
-                <Link key={href} href={href} className="flex min-h-11 items-center rounded-[var(--radius-std)] px-3 font-semibold text-muted hover:bg-surface-alt hover:text-ink">
-                  {label}
-                </Link>
-              ))}
-            </nav>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-muted">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2">
+          <Link href="/staff" className="flex min-h-11 items-center">
+            <Logo name={lang === "mk" ? APP_NAME : APP_NAME_EN} />
+          </Link>
+          <div className="flex items-center gap-2">
+            <span className="hidden text-sm text-muted md:inline">
               {user.name} · {t.staff.roles[user.role]}
             </span>
             <LangSwitch />
             <LogoutButton />
           </div>
         </div>
+        {links.length > 1 && (
+          <nav className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-2 pb-1">
+            {links.map(([href, label]) => (
+              <Link key={href} href={href} className="flex min-h-11 shrink-0 items-center rounded-[var(--radius-std)] px-3 font-semibold text-muted hover:bg-surface-alt hover:text-ink">
+                {label}
+              </Link>
+            ))}
+          </nav>
+        )}
       </header>
       <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
     </div>

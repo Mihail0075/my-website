@@ -326,7 +326,7 @@ const en: Dict = {
     deliveredSubject: "Parcel {tracking} was picked up",
     deliveredText: "The parcel to {name} was picked up on {date}.",
     expiredSubject: "Pickup period expired for parcel {tracking}",
-    expiredText: "The parcel was not collected within {hours} hours. Please contact us to arrange pickup or return.",
+    expiredText: "The parcel was not collected within {hours} hours. A late fee of MKD {fee} applies. Collect it at the counter or contact us.",
   },
   footer: {
     rights: "All rights reserved.",

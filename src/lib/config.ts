@@ -4,8 +4,8 @@ import type { LockerSize } from "@/db/schema";
  * Business settings for the first version. Prices are placeholders until the
  * real price list is decided; everything here is in one place so it is easy to change.
  */
-export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Брза Пратка";
-export const APP_NAME_EN = process.env.NEXT_PUBLIC_APP_NAME_EN ?? "Brza Pratka";
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Карго Роман";
+export const APP_NAME_EN = process.env.NEXT_PUBLIC_APP_NAME_EN ?? "Kargo Roman";
 
 export const SIZES: LockerSize[] = ["S", "M", "L"];
 
@@ -17,7 +17,7 @@ export const LOCKER_DIMENSIONS: Record<LockerSize, { h: number; w: number; d: nu
 };
 
 /** Transport price bus station → bus station, in denars, by size. */
-export const BASE_PRICE: Record<LockerSize, number> = { S: 150, M: 200, L: 250 };
+export const BASE_PRICE: Record<LockerSize, number> = { S: 100, M: 150, L: 200 };
 
 /** Extra charge by weight. The first bracket the weight fits in applies. */
 export const WEIGHT_BRACKETS: { upToKg: number; extra: number }[] = [
@@ -31,6 +31,9 @@ export const MAX_WEIGHT_KG = WEIGHT_BRACKETS[WEIGHT_BRACKETS.length - 1].upToKg;
 
 /** How long a parcel waits in the destination locker before it expires. */
 export const PICKUP_WINDOW_HOURS = 24;
+
+/** Late fee charged when a parcel is collected after the pickup window. Amount still to be decided (placeholder). */
+export const LATE_FEE_DENARS = 100;
 
 /** Unpaid parcels are cancelled after this long, freeing their PIN. */
 export const UNPAID_TTL_MINUTES = 60;

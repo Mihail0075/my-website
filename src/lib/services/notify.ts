@@ -2,7 +2,7 @@ import nodemailer, { type Transporter } from "nodemailer";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { notifications, stations, type Parcel, type Station } from "@/db/schema";
-import { appUrl, PICKUP_WINDOW_HOURS } from "@/lib/config";
+import { appUrl, LATE_FEE_DENARS, PICKUP_WINDOW_HOURS } from "@/lib/config";
 import { fmt, formatDateTime, getDictFor, isLang, stationName, type Lang } from "@/i18n";
 
 type Mail = { to: string; subject: string; lines: string[]; parcelId: string };
@@ -137,7 +137,7 @@ export async function notifyExpired(parcel: Parcel) {
   const lang = langOf(parcel);
   const e = getDictFor(lang).email;
   const subject = fmt(e.expiredSubject, { tracking: parcel.trackingNumber });
-  const lines = [fmt(e.expiredText, { hours: PICKUP_WINDOW_HOURS }), e.footer];
+  const lines = [fmt(e.expiredText, { hours: PICKUP_WINDOW_HOURS, fee: LATE_FEE_DENARS }), e.footer];
   for (const to of [parcel.senderEmail, parcel.recipientEmail]) {
     if (to) await sendMail({ to, subject, lines, parcelId: parcel.id });
   }

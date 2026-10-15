@@ -54,9 +54,9 @@ beforeEach(async () => {
 
 describe("pricing and input", () => {
   it("prices by size plus weight bracket", () => {
-    expect(calcPrice("S", 1)).toBe(150);
-    expect(calcPrice("M", 4.9)).toBe(250);
-    expect(calcPrice("L", 20)).toBe(400);
+    expect(calcPrice("S", 1)).toBe(100);
+    expect(calcPrice("M", 4.9)).toBe(200);
+    expect(calcPrice("L", 20)).toBe(350);
     expect(() => calcPrice("L", 20.1)).toThrow();
   });
 
@@ -85,7 +85,7 @@ describe("full self-service flow Skopje → Prilep", () => {
     expect(created.status).toBe("AWAITING_PAYMENT");
     expect(created.trackingNumber).toMatch(/^[1-9]\d{9}$/);
     expect(created.pickupPin).toMatch(/^\d{4}$/);
-    expect(created.priceDenars).toBe(150);
+    expect(created.priceDenars).toBe(100);
 
     const paid = await payParcel(created.senderToken, "CARD_ONLINE");
     expect(paid.status).toBe("AWAITING_DROPOFF");
@@ -146,7 +146,7 @@ describe("counter flow Prilep → Skopje", () => {
     const p = await createParcel(parcelInput(ctx.pp.id, ctx.sk.id, { size: "M", weightKg: 7 }), { via: "COUNTER", userId: ctx.counter.id, payment: "CASH" });
     expect(p.status).toBe("AT_ORIGIN");
     expect(p.paymentStatus).toBe("PAID");
-    expect(p.priceDenars).toBe(300);
+    expect(p.priceDenars).toBe(250);
 
     const loaded = await loadParcel(p.id, ctx.pp.id, ctx.driver.id);
     expect(loaded.lockerNumber).toBeNull();

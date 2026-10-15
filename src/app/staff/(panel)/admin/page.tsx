@@ -37,7 +37,25 @@ export default async function AdminParcels({ searchParams }: { searchParams: Pro
         </select>
         <button className="min-h-12 rounded-[var(--radius-std)] bg-brand px-5 font-semibold text-white hover:bg-brand-hover">{t.common.search}</button>
       </form>
-      <div className="overflow-x-auto rounded-[var(--radius-card)] border border-line bg-white">
+      <ul className="flex flex-col gap-2 md:hidden">
+        {rows.map((p) => (
+          <li key={p.id}>
+            <Link href={`/staff/admin/parcels/${p.id}`} className="flex flex-col gap-1 rounded-[var(--radius-card)] border border-line bg-white p-4">
+              <span className="flex items-center justify-between gap-2">
+                <span className="font-mono font-bold text-brand">{p.trackingNumber}</span>
+                <span className="font-semibold">{formatPrice(p.priceDenars, lang)}</span>
+              </span>
+              <span className="text-sm text-muted">
+                {stationName(byId.get(p.originStationId)!, lang)} → {stationName(byId.get(p.destinationStationId)!, lang)} · {p.recipientName}
+              </span>
+              <span>
+                <StatusBadge status={p.status} />
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <div className="hidden overflow-x-auto rounded-[var(--radius-card)] border border-line bg-white md:block">
         <table className="w-full min-w-[760px] text-left text-sm">
           <thead className="bg-surface-alt text-muted">
             <tr>
